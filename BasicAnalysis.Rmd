@@ -1,0 +1,51 @@
+---
+title: "BasicAnalysis"
+author: "martinvanelp"
+date: "Sunday, September 21, 2014"
+output: html_document
+---
+
+##Basic inferential data analysis
+Now in the second portion of the class, we're going to analyze the ToothGrowth data in the R datasets package. 
+1. Load the ToothGrowth data and perform some basic exploratory data analyses.
+2. Provide a basic summary of the data.
+3. Use confidence intervals and hypothesis tests to compare tooth growth by supp and dose. (Use the techniques from class even if there's other approaches worth considering)
+4. State your conclusions and the assumptions needed for your conclusions.
+
+##Output
+**1. Load the ToothGrowth data and perform some basic exploratory data analyses.**
+
+**2. Provide a basic summary of the data.**
+```{r}
+library(datasets)
+summary(ToothGrowth)
+str(ToothGrowth)
+with(ToothGrowth, {
+        hist(len)
+        hist(dose)
+        plot(len, dose)
+})
+```
+
+There are three variables in the dataset: two numeric (len & dose) and one factor (supp). Variable len seems sort of normally distributed. It seems dose and length are correlated given the last plot.
+
+**3. Use confidence intervals and hypothesis tests to compare tooth growth by supp and dose.** (Use the techniques from class even if there's other approaches worth considering)
+```{r}
+TGsupp <- subset(ToothGrowth, supp %in% c("OJ", "VC"))
+t.test(len ~ supp, paired = FALSE, var.equal = TRUE, data = TGsupp)
+
+TG12 <- subset(ToothGrowth, dose %in% c(0.5, 1.0))
+t.test(len ~ dose, paired = FALSE, var.equal = TRUE, data = TG12)
+
+TG13 <- subset(ToothGrowth, dose %in% c(0.5, 2.0))
+t.test(len ~ dose, paired = FALSE, var.equal = TRUE, data = TG13)
+
+TG23 <- subset(ToothGrowth, dose %in% c(1.0, 2.0))
+t.test(len ~ dose, paired = FALSE, var.equal = TRUE, data = TG23)
+```
+
+On a 95% confidence interval, the supplement is not significantly influencing tooth growth in this sample. Each increase in dose increases the tooth growth significantly on a 95% confidence interval in this sample.
+
+**4. State your conclusions and the assumptions needed for your conclusions.**
+
+For tooth growth the dose of the supplement significantly influential. The kind of supplement on the other hand does not significantly influence tooth growth, given a 95% confidence interval in both cases. The underlying assumption is that the sample is representative for the population.
